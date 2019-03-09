@@ -19,7 +19,7 @@ def saveSquare(xS,yS,xE, yE):
 			yS -= yStep
 			xS = round(xS, 5)
 			yS = round(yS, 5)
-			print('.', end=' ')
+			print('.')
 		xS += xStep
 		yS = ySTemp
 
