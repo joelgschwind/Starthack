@@ -1,0 +1,4 @@
+trainingInput:
+  runtimeVersion: "1.9"
+  scaleTier: CUSTOM
+  masterType: standard_gpu
