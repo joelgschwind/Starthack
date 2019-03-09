@@ -2,20 +2,29 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-xStep = 0.0015461
-yStep = 0.0010837
+xStep = 0.00154
+yStep = 0.00108
+
+@timeout_decorator.timeout(5)
 
 def getURL(x, y):
 	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=640x480&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
 
 def saveSquare(xS,yS,xE, yE):
+	print('Start saving square: ')
+	ySTemp = yS
 	while(xS < xE):
 		while(yS > yE):
 			response =requests.get(getURL(xS,yS))
 			img = Image.open(BytesIO(response.content))
 			img.save(str(xS).replace('.','') + str(yS).replace('.','') + '.png')
-			xS += xStep
 			yS -= yStep
+			xS = round(xS, 5)
+			yS = round(yS, 5)
+			print('.', end=' ')
+		xS += xStep
+		yS = ySTemp
+
 
 #Zuerich
 x = 8.492131
