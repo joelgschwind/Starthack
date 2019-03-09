@@ -2,20 +2,20 @@ from PIL import Image
 import requests
 from io import BytesIO
 
-xStep = 0.0020461
-yStep = 0.0012837
+xStep = 0.0015461
+yStep = 0.0010837
 
 def getURL(x, y):
 	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=640x480&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
 
-def saveSquare(x,y,xEnd, yEnd):
-	while(x < xEnd):
-		while(y > yEnd):
-			response =requests.get(getURL(x,y))
+def saveSquare(xS,yS,xE, yE):
+	while(xS < xE):
+		while(yS > yE):
+			response =requests.get(getURL(xS,yS))
 			img = Image.open(BytesIO(response.content))
-			img.save(str(x).replace('.','') + str(y).replace('.','') + '.png')
-			x += xStep
-			y -= yStep
+			img.save(str(xS).replace('.','') + str(yS).replace('.','') + '.png')
+			xS += xStep
+			yS -= yStep
 
 #Zuerich
 x = 8.492131
