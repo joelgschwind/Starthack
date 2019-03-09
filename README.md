@@ -21,10 +21,3 @@
 *(8)* Load config+ training data + eval_data + labelmap + model checkpoint into Gcloud Storage
 
 *(9)* Start ML-Engine Job
-
-
-from PIL import Image
-
-im = Image.open("Ba_b_do8mag_c6_big.png")
-rgb_im = im.convert('RGB')
-rgb_im.save('colors.jpg')
