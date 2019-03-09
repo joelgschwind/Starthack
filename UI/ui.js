@@ -37,7 +37,6 @@ function placeMarker(latLng) {
         if (crosswalkLocationSet) {
             crosswalkLocation.setMap(null);
             crosswalkLocationSet = false;
-            crosswalkLocation = null;
             directionsDisplay.setMap(null);
             routeShown = false;
             resetImage();
@@ -83,7 +82,7 @@ function showRoute(){
     if(routeShown) {
         directionsDisplay.setMap(null);
     } else {
-        if(crosswalkLocation != null){
+        if(crosswalkLocationSet){
             directionsService.route({
                 origin: startLocation.getPosition(),
                 destination: crosswalkLocation.getPosition(),
