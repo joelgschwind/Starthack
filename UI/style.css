@@ -1,4 +1,32 @@
+#container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 #googleMap {
-    width: 50vw;
-    height: 100vh;
+    width: calc(50vw - 240px);
+    height: calc(100vh - 240px);
+}
+
+#classificationImg {
+    width: calc(50vw - 240px);
+    height: calc(100vh - 240px);
+}
+
+#buttonContainer {
+    margin: 50px;
+}
+
+#button {
+    margin-right: 30px;
+    cursor:pointer;
+    border:none;
+    width:40px;
+    height:40px;
+}
+#routeButton {
+    cursor:pointer;
+    border:none;
+    width:40px;
+    height:40px;
 }

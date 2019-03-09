@@ -5,8 +5,15 @@
     <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
   </head>
   <body>
-    <button onclick="process()">Process</button>
-    <div id="googleMap"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA&callback=myMap"></script>        
+    <div id="buttonContainer">
+      <img onclick="process()" id="button" src="button.png"></img>
+      <img onclick="showRoute()" id="routeButton" src="route.png"></img>
+    </div>
+    <div id="container">
+      <div id="googleMap"></div>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA&callback=myMap"></script>   
+      
+      <img id="classificationImg" src="gray.jpeg">
+    </div>
   </body>
 </html>

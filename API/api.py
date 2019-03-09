@@ -17,11 +17,11 @@ def classify():
 	""" 
 	Receives classification requests and replies with the result 
 	"""
-	videoName = request.form['videoName']
-	# Classify video here ->
-	print('resultFiles/' + videoName + 'Result.json')
-	response = open('resultFiles/' + videoName + 'Result.json', 'r')
-	return response.read().replace('\n', '')
+	lat = request.form['lat']
+	lng = request.form['lng']
+	# Classify video here -> 
+
+	return str(lat) + '/' + str(lng)
 
 if __name__ == '__main__':
 	app.run(port=5000)
