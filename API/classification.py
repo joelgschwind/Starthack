@@ -7,6 +7,8 @@ from object_detection.utils import visualization_utils as vis_util
 from matplotlib import pyplot as plt
 from PIL import Image
 from object_detection.utils import ops as utils_ops
+import os
+import PIL
 
 def load_image_into_numpy_array(image):
   (im_width, im_height) = image.size
@@ -14,14 +16,19 @@ def load_image_into_numpy_array(image):
       (im_height, im_width, 3)).astype(np.uint8)
 
 def getURL(x, y):
-	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=640x480&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
+	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=500x500&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
 
 def saveSquare(x,y):
 			response =requests.get(getURL(x,y))
 			img = Image.open(BytesIO(response.content))
+			img = img.resize((1000,1000), PIL.Image.ANTIALIAS)
 			imgName = str(x).replace('.','') + str(y).replace('.','') + '.png'
+			if os.path.isfile(imgName):
+				os.remove(imgName)
 			img.save(imgName)
 			return(imgName)
+
+
 
 def loadModel():
 	detection_graph = tf.Graph()
@@ -81,9 +88,23 @@ def run_inference_for_single_image(image, graph):
         output_dict['detection_masks'] = output_dict['detection_masks'][0]
   return output_dict
 
-def cwClassificaiton(x,y, inference_graph):
+
+def box_extractor(boxes, scores, img_width, img_height):
+	# ymin,xmin,ymax, xmax
+	boxes_relevant = []
+	box_centers = []
+	for box, score in zip(boxes, scores):
+		if score > 0.5:
+			boxes_relevant.append(box)
+			x_mean = (box[1] + box[3])/2
+			y_mean = (box[0] + box[2])/2
+			box_centers.append([x_mean * img_width, y_mean * img_height])
+	return(box_centers)
+
+
+def cwClassification(x,y, inference_graph):
 	imgName = saveSquare(x,y)
-	IMAGE_SIZE = (12, 8)
+	IMAGE_SIZE = (8, 8)
 	PATH_TO_LABELS = "Starthack/configs_labels/label_map.pbtxt"
 	NUM_CLASSES = 1
 
@@ -92,10 +113,14 @@ def cwClassificaiton(x,y, inference_graph):
 	category_index = label_map_util.create_category_index(categories)
 
 	image = Image.open(imgName)
+	width = image.width
+	height = image.height
+	center_img = [width/2, height/2]
 	image = image.convert('RGB')
 	image.save('test.jpg')
 	img_np = load_image_into_numpy_array(image)
 	output_dict = run_inference_for_single_image(img_np, inference_graph)
+
 	vis_util.visualize_boxes_and_labels_on_image_array(
 		img_np,
 		output_dict['detection_boxes'],
@@ -107,9 +132,36 @@ def cwClassificaiton(x,y, inference_graph):
 		line_thickness=6)
 	plt.figure(figsize=IMAGE_SIZE)
 	plt.imshow(img_np)
-	plt.savefig('Starthack/API/detection_boxes.png')
+	outFile = 'Starthack/API/detection_boxes.png'
+	if os.path.isfile(outFile):
+		os.remove(outFile)
+	plt.savefig(outFile)
+
+	centers = box_extractor(output_dict['detection_boxes'], output_dict['detection_scores'], width, height)
+	def getClosestCW(points):
+		dist_min = 100000000
+		for point in points:
+			dist = ((point[0] - center_img[0])**2 + (point[1] - center_img[1])**2)**0.5
+			if(dist_min > dist):
+				dist_min = dist
+				point_min = point
+		return(point_min)
+	closestCW = getClosestCW(centers)
+
+	geo_codConsy = 0.000005614 * 0.175
+	geo_codConsx = 0.000005614 * 0.2325
+	x_dist = (closestCW[0] - center_img[0]) * geo_codConsx
+	y_dist = -(closestCW[1] - center_img[1]) * geo_codConsy
+
+	cw_geoCodx = x + x_dist
+	cw_geoCody = y + y_dist
+	return(cw_geoCodx, cw_geoCody)
+
+
 
 x = 7.4296
 y= 46.9432
 
-xy = cwClassificaiton(x,y, detection_graph)
+xy = cwClassification(x,y, detection_graph)
+
+
