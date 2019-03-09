@@ -1,4 +1,22 @@
+#container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
 #googleMap {
-    width: 50vw;
-    height: 100vh;
+    width: calc(50vw - 240px);
+    height: calc(100vh - 240px);
+}
+
+#classificationImg {
+    width: calc(50vw - 240px);
+    height: calc(100vh - 240px);
+}
+
+#button {
+    margin: 50px;
+    cursor:pointer;
+    border:none;
+    width:40px;
+    height:40px;
 }
