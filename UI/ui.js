@@ -8,6 +8,7 @@ var crosswalkLocationSet = false;
 
 var directionsService;
 var directionsDisplay;
+var routeShown = false;
 
 function myMap() {
     mapProp= {
@@ -33,6 +34,14 @@ function myMap() {
 function placeMarker(latLng) {
     if (startLocationSet) {
         startLocation.setMap(null);
+        if (crosswalkLocationSet) {
+            crosswalkLocation.setMap(null);
+            crosswalkLocationSet = false;
+            crosswalkLocation = null;
+            directionsDisplay.setMap(null);
+            routeShown = false;
+            resetImage();
+        }
     }
     var marker = new google.maps.Marker({
         position: latLng,
@@ -66,8 +75,30 @@ function process() {
     getClassification(startLocation.getPosition().lat(), startLocation.getPosition().lng())
 }
 
-function setImage() {
+function resetImage() {
+    document.getElementById("classificationImg").src = "gray.jpeg";
+}
 
+function showRoute(){
+    if(routeShown) {
+        directionsDisplay.setMap(null);
+    } else {
+        if(crosswalkLocation != null){
+            directionsService.route({
+                origin: startLocation.getPosition(),
+                destination: crosswalkLocation.getPosition(),
+                travelMode: google.maps.TravelMode.WALKING
+            }, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+            directionsDisplay.setMap(map);
+        }
+    }
+    routeShown = !routeShown;
 }
 
 var apiIP = 'http://127.0.0.1:5000/';

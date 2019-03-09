@@ -13,8 +13,18 @@
     height: calc(100vh - 240px);
 }
 
-#button {
+#buttonContainer {
     margin: 50px;
+}
+
+#button {
+    margin-right: 30px;
+    cursor:pointer;
+    border:none;
+    width:40px;
+    height:40px;
+}
+#routeButton {
     cursor:pointer;
     border:none;
     width:40px;
