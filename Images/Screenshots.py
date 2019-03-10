@@ -6,7 +6,7 @@ xStep = 0.00154
 yStep = 0.00108
 
 def getURL(x, y):
-	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=640x480&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
+	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=640x480&scale=2&maptype=satellite&key=[YOUR_API_KEY]'
 
 def saveSquare(xS,yS,xE, yE):
 	print('Start saving square: ')
