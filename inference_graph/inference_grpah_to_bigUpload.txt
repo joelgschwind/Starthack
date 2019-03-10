@@ -1,0 +1,2 @@
+For classification we use  Tensorflow object detection API. The model weights are recomputed by transfer-learning.
+However, the inference graph is too big to upload to github (>100MB)
