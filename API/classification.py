@@ -16,7 +16,7 @@ def load_image_into_numpy_array(image):
       (im_height, im_width, 3)).astype(np.uint8)
 
 def getURL(x, y):
-	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=500x500&scale=2&maptype=satellite&key=AIzaSyDvh2Ss2GMSmLlUQ3O_t-uytTY0pyfw8wA'
+	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=500x500&scale=2&maptype=satellite&key=[YOUR_API_KEY]'
 
 def saveSquare(x,y):
 			response =requests.get(getURL(x,y))
