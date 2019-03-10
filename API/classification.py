@@ -11,38 +11,41 @@ import os
 import PIL
 
 def load_image_into_numpy_array(image):
+	# https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
   (im_width, im_height) = image.size
   return np.array(image.getdata()).reshape(
       (im_height, im_width, 3)).astype(np.uint8)
 
 def getURL(x, y):
-	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=500x500&scale=2&maptype=satellite&key=[YOUR_API_KEY]'
+	return 'http://maps.google.com/maps/api/staticmap?center=' + str(y) + ',' + str(x) + '&zoom=19&size=500x500&scale=2&maptype=satellite&key=?????????'
 
 def saveSquare(x,y):
 			response =requests.get(getURL(x,y))
 			img = Image.open(BytesIO(response.content))
 			img = img.resize((1000,1000), PIL.Image.ANTIALIAS)
-			imgName = str(x).replace('.','') + str(y).replace('.','') + '.png'
+			imgName = 'api_query.png'
 			if os.path.isfile(imgName):
 				os.remove(imgName)
 			img.save(imgName)
 			return(imgName)
 
 
-
-def loadModel():
+def loadModel(path_to_graph):
+	# https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 	detection_graph = tf.Graph()
 	with detection_graph.as_default():
 		od_graph_def = tf.GraphDef()
-		with tf.gfile.GFile("Starthack/inference_graph/frozen_inference_graph.pb", 'rb') as fid:
+		with tf.gfile.GFile(path_to_graph, 'rb') as fid:
 			serialized_graph = fid.read()
 			od_graph_def.ParseFromString(serialized_graph)
 			tf.import_graph_def(od_graph_def, name='')
 	return(detection_graph)
 
-detection_graph = loadModel()
+#path_to_graph = "Starthack/inference_graph/frozen_inference_graph.pb"
+#detection_graph = loadModel()
 
 def run_inference_for_single_image(image, graph):
+	#https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
   with graph.as_default():
     with tf.Session() as sess:
       # Get handles to input and output tensors
@@ -105,7 +108,7 @@ def box_extractor(boxes, scores, img_width, img_height):
 def cwClassification(x,y, inference_graph):
 	imgName = saveSquare(x,y)
 	IMAGE_SIZE = (8, 8)
-	PATH_TO_LABELS = "Starthack/configs_labels/label_map.pbtxt"
+	PATH_TO_LABELS = "../configs_labels/label_map.pbtxt"
 	NUM_CLASSES = 1
 
 	label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
@@ -117,7 +120,7 @@ def cwClassification(x,y, inference_graph):
 	height = image.height
 	center_img = [width/2, height/2]
 	image = image.convert('RGB')
-	image.save('test.jpg')
+	#image.save('test.jpg')
 	img_np = load_image_into_numpy_array(image)
 	output_dict = run_inference_for_single_image(img_np, inference_graph)
 
@@ -132,7 +135,7 @@ def cwClassification(x,y, inference_graph):
 		line_thickness=6)
 	plt.figure(figsize=IMAGE_SIZE)
 	plt.imshow(img_np)
-	outFile = 'Starthack/API/detection_boxes.png'
+	outFile = 'classification.png'
 	if os.path.isfile(outFile):
 		os.remove(outFile)
 	plt.savefig(outFile)
@@ -155,13 +158,13 @@ def cwClassification(x,y, inference_graph):
 
 	cw_geoCodx = x + x_dist
 	cw_geoCody = y + y_dist
-	return(cw_geoCodx, cw_geoCody)
+	return(cw_geoCody.item(), cw_geoCodx.item())
 
 
 
-x = 7.4296
-y= 46.9432
+#x = 7.4296
+#y= 46.9432
 
-xy = cwClassification(x,y, detection_graph)
+#xy = cwClassification(x,y, detection_graph)
 
 

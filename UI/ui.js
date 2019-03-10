@@ -78,6 +78,17 @@ function resetImage() {
     document.getElementById("classificationImg").src = "gray.jpeg";
 }
 
+function setClassificationImage() {
+    var source = '../API/classification.png',
+        timestamp = (new Date()).getTime(),
+        newUrl = source + '?_=' + timestamp;
+    document.getElementById("classificationImg").src = newUrl;
+}
+
+function setLoadingGif() {
+    document.getElementById("classificationImg").src = "loading.gif";
+}
+
 function showRoute(){
     if(routeShown) {
         directionsDisplay.setMap(null);
@@ -115,6 +126,8 @@ function getClassification(lat, lng) {
     httpRequest.open('POST', this.apiIP + 'classify');
     httpRequest.send(formData);
 
+    setLoadingGif();
+
     httpRequest.onreadystatechange = () => {
         if (httpRequest.readyState === 4) {
             var response = httpRequest.response;
@@ -123,7 +136,7 @@ function getClassification(lat, lng) {
             var lng = response.substring(slice + 1, response.length);
             console.log(lat + ' ' + lng);
             placeMarkerCrosswalk(parseFloat(lat), parseFloat(lng));
-            document.getElementById("classificationImg").src = "../API/classification.png";
+            setClassificationImage();
         }
     };
 }
